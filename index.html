@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Black Culture & African American History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F4EFE6;
+      --surface:   #FAF7F2;
+      --border:    #DDD3C0;
+      --brown-dk:  #3D2B1F;
+      --brown-md:  #7A5C3E;
+      --brown-lt:  #B89A78;
+      --tan:       #C9B08A;
+      --sage-dk:   #5E7A5A;
+      --sage-md:   #7A9B76;
+      --sage-lt:   #A8C4A4;
+      --sage-pale: #D6E8D4;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--brown-dk);
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1.25rem 3rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      max-width: 640px;
+      width: 100%;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 600;
+      color: var(--brown-dk);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--brown-md);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: var(--tan);
+      margin: 1rem auto 0;
+      border-radius: 2px;
+    }
+
+    /* Category filter */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      max-width: 680px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .filter-btn {
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--brown-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.02em;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--sage-md);
+      color: var(--sage-dk);
+      background: var(--sage-pale);
+    }
+
+    .filter-btn.active {
+      background: var(--sage-md);
+      border-color: var(--sage-md);
+      color: #fff;
+    }
+
+    /* Card */
+    .card-wrap {
+      width: 100%;
+      max-width: 640px;
+      perspective: 1200px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem 2.25rem;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 16px rgba(61,43,31,0.06), 0 1px 4px rgba(61,43,31,0.04);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--tan), var(--sage-md));
+      border-radius: 16px 16px 0 0;
+    }
+
+    .card.fade-out {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .card-category {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sage-dk);
+      margin-bottom: 1.25rem;
+    }
+
+    .card-fact {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2.8vw, 1.35rem);
+      line-height: 1.65;
+      color: var(--brown-dk);
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-counter {
+      font-size: 0.72rem;
+      color: var(--brown-lt);
+      letter-spacing: 0.04em;
+    }
+
+    .card-ornament {
+      font-size: 1.4rem;
+      opacity: 0.18;
+      color: var(--brown-md);
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 1.75rem;
+      max-width: 640px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      letter-spacing: 0.01em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.1rem;
+    }
+
+    .btn-ghost {
+      background: none;
+      border: 1.5px solid var(--border);
+      color: var(--brown-md);
+    }
+
+    .btn-ghost:hover {
+      background: var(--border);
+      color: var(--brown-dk);
+    }
+
+    .btn-primary {
+      background: var(--sage-dk);
+      color: #fff;
+      padding: 0.7rem 1.6rem;
+      box-shadow: 0 2px 8px rgba(94,122,90,0.22);
+    }
+
+    .btn-primary:hover {
+      background: #4e6849;
+      box-shadow: 0 3px 12px rgba(94,122,90,0.32);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      width: 100%;
+      max-width: 640px;
+      margin-top: 1.25rem;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--tan), var(--sage-md));
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.4rem;
+      font-size: 0.68rem;
+      color: var(--brown-lt);
+      letter-spacing: 0.03em;
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.72rem;
+      color: var(--brown-lt);
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.75rem 1.5rem; }
+      .controls { flex-wrap: wrap; }
+      .btn-primary { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Black Culture &amp;<br>African American History</h1>
+  <p>300 Curated Facts</p>
+  <div class="divider"></div>
+</header>
+
+<div class="filters" id="filters"></div>
+
+<div class="card-wrap">
+  <div class="card" id="card">
+    <div>
+      <div class="card-category" id="card-category"></div>
+      <p class="card-fact" id="card-fact"></p>
+    </div>
+    <div class="card-footer">
+      <span class="card-counter" id="card-counter"></span>
+      <span class="card-ornament">&#10022;</span>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn btn-ghost" id="btn-prev" title="Previous fact">&#8592; Prev</button>
+  <button class="btn btn-primary" id="btn-random">&#10227; New Fact</button>
+  <button class="btn btn-ghost" id="btn-next" title="Next fact">Next &#8594;</button>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-label">
+    <span id="progress-seen">0 discovered</span>
+    <span>300 total</span>
+  </div>
+</div>
+
+<footer>Compiled with care &mdash; celebrating Black excellence, history &amp; culture</footer>
+
+<script>
+const facts = [
+  // ── Inventors & Scientists ──────────────────────────────────────────────────
+  { cat: "Inventors & Scientists", text: "Garrett Morgan invented the three-position traffic signal in 1923 and also created a breathing device that was the direct predecessor to the gas mask." },
+  { cat: "Inventors & Scientists", text: "Lewis Howard Latimer invented a longer-lasting carbon filament for lightbulbs and worked directly alongside both Thomas Edison and Alexander Graham Bell." },
+  { cat: "Inventors & Scientists", text: "Dr. Charles Drew pioneered blood bank technology in the 1930s, developing large-scale blood storage systems that saved countless lives during World War II." },
+  { cat: "Inventors & Scientists", text: "Mae C. Jemison became the first African American woman to travel to space when she flew aboard the Space Shuttle Endeavour on September 12, 1992." },
+  { cat: "Inventors & Scientists", text: "Dr. Daniel Hale Williams performed the world's first successful open-heart surgery in 1893 at Provident Hospital in Chicago, which he also founded." },
+  { cat: "Inventors & Scientists", text: "Granville T. Woods, known as the 'Black Edison,' held over 60 patents, including an improved telegraph system that allowed moving trains to communicate and prevent collisions." },
+  { cat: "Inventors & Scientists", text: "Dr. Patricia Bath invented the Laserphaco Probe in 1988, revolutionizing cataract surgery and restoring sight to patients who had been blind for decades." },
+  { cat: "Inventors & Scientists", text: "Otis Boykin invented a wire precision resistor used in computers, radios, guided missiles — and critically, in the cardiac pacemaker." },
+  { cat: "Inventors & Scientists", text: "Dr. Shirley Ann Jackson's research at Bell Labs enabled the development of the portable fax machine, touch-tone telephone, solar cells, and fiber optic cables." },
+  { cat: "Inventors & Scientists", text: "Frederick McKinley Jones co-invented the portable refrigeration system for long-haul trucks in 1940, transforming the food industry and revolutionizing military logistics." },
+  { cat: "Inventors & Scientists", text: "Jan Ernst Matzeliger invented the shoe lasting machine in 1883, which automated shoemaking and cut the cost of shoes by half, making them affordable for working-class families." },
+  { cat: "Inventors & Scientists", text: "Percy Lavon Julian was a pioneering chemist who synthesized physostigmine to treat glaucoma and developed a fire-retardant foam used by the U.S. Navy." },
+  { cat: "Inventors & Scientists", text: "Dr. Lonnie Johnson invented the Super Soaker water gun in 1982, which became one of the best-selling toys of all time, generating over $1 billion in revenue." },
+  { cat: "Inventors & Scientists", text: "Dr. Mark Dean co-invented the IBM personal computer and holds three of the original nine IBM PC patents. He also led the team that created the first 1 GHz processor chip." },
+  { cat: "Inventors & Scientists", text: "Norbert Rillieux invented a vacuum evaporating pan in 1846 that revolutionized sugar refining, making refined sugar affordable for the first time and setting the standard for industrial processing." },
+  { cat: "Inventors & Scientists", text: "Alice H. Parker patented a gas furnace heating system in 1919 that was a direct precursor to modern central heating, designed to heat multiple rooms independently." },
+  { cat: "Inventors & Scientists", text: "Andrew Jackson Beard invented the 'Jenny coupler,' an automatic railroad car coupling device that eliminated the need for workers to physically stand between cars — saving countless lives and limbs." },
+  { cat: "Inventors & Scientists", text: "Alexander Miles received a patent in 1887 for an improved elevator with automatically opening and closing doors, making elevators dramatically safer for everyday use." },
+  { cat: "Inventors & Scientists", text: "Thomas Jennings was the first African American to hold a U.S. patent, granted in 1821 for a dry-cleaning process called 'dry scouring.' He used the profits to buy his family's freedom." },
+  { cat: "Inventors & Scientists", text: "Dr. Ernest Everett Just was a pioneering marine biologist who discovered that the egg — not the sperm — plays the primary role in initiating fertilization, overturning a century of assumption." },
+  { cat: "Inventors & Scientists", text: "Dr. Neil deGrasse Tyson has directed the Hayden Planetarium in New York since 1996 and is one of the most recognized science communicators in the world." },
+  { cat: "Inventors & Scientists", text: "Sarah Boone patented an improved ironing board in 1892 featuring a narrow, curved shape that made it far easier to iron sleeves and the bodies of women's garments." },
+  { cat: "Inventors & Scientists", text: "Philip Emeagwali designed a formula using 65,536 computers simultaneously to perform 3.1 billion calculations per second in 1989, earning a Gordon Bell Prize and inspiring early internet architecture." },
+  { cat: "Inventors & Scientists", text: "Dr. Alexa Canady became the first Black female neurosurgeon in the United States in 1981, specializing in pediatric neurosurgery." },
+  { cat: "Inventors & Scientists", text: "The phrase 'the real McCoy' is widely believed to refer to Elijah McCoy, a Black engineer who invented self-lubricating machines so reliable that buyers insisted on 'the real McCoy.'" },
+
+  // ── Civil Rights ─────────────────────────────────────────────────────────────
+  { cat: "Civil Rights", text: "The Montgomery Bus Boycott lasted 381 days — from December 5, 1955 to December 20, 1956 — and is one of the longest and most successful mass movements against racial segregation in U.S. history." },
+  { cat: "Civil Rights", text: "Rosa Parks was not simply tired when she refused to give up her seat. She was a trained civil rights activist and NAACP secretary who had strategically prepared to resist segregation." },
+  { cat: "Civil Rights", text: "The March on Washington in August 1963 drew over 250,000 people, making it one of the largest political demonstrations in U.S. history at the time." },
+  { cat: "Civil Rights", text: "Fannie Lou Hamer, a sharecropper's daughter who was beaten and jailed for her activism, became one of the most powerful voting rights advocates of the 20th century." },
+  { cat: "Civil Rights", text: "Thurgood Marshall argued Brown v. Board of Education before the Supreme Court in 1954, winning the landmark desegregation ruling, before becoming the first Black Supreme Court Justice in 1967." },
+  { cat: "Civil Rights", text: "The Greensboro sit-ins began on February 1, 1960, when four Black college students sat at a whites-only Woolworth's lunch counter in North Carolina, igniting a nationwide sit-in movement." },
+  { cat: "Civil Rights", text: "Medgar Evers, the NAACP's first field secretary in Mississippi, was assassinated in his driveway in 1963. The murderer was not convicted until 1994 — 31 years later." },
+  { cat: "Civil Rights", text: "The Voting Rights Act of 1965 eliminated discriminatory voting practices such as literacy tests that had effectively disenfranchised Black voters across the South for generations." },
+  { cat: "Civil Rights", text: "Freedom Riders were civil rights activists who rode interstate buses into the segregated South in 1961 to challenge the non-enforcement of desegregation rulings, facing brutal violence." },
+  { cat: "Civil Rights", text: "John Lewis was beaten on the Edmund Pettus Bridge on 'Bloody Sunday' in 1965. He went on to serve 17 terms in the U.S. Congress and was awarded the Presidential Medal of Freedom." },
+  { cat: "Civil Rights", text: "Dr. Martin Luther King Jr. was just 26 years old when he emerged as leader of the Montgomery Bus Boycott in 1955, launching one of history's greatest careers in moral leadership." },
+  { cat: "Civil Rights", text: "The NAACP was founded in 1909 by a coalition of Black and white activists — including Ida B. Wells and W.E.B. Du Bois — and is the oldest civil rights organization in the United States." },
+  { cat: "Civil Rights", text: "Bayard Rustin was the chief organizer of the 1963 March on Washington, a brilliant strategist who was deliberately kept out of the spotlight because of his sexuality." },
+  { cat: "Civil Rights", text: "Ida B. Wells-Barnett launched a pioneering anti-lynching campaign in the 1890s, risking her life to document and expose racial terror across the South at a time when almost no one else dared." },
+  { cat: "Civil Rights", text: "The Black Panther Party, founded in Oakland in 1966 by Huey Newton and Bobby Seale, established free breakfast programs for children in cities across America — feeding tens of thousands." },
+  { cat: "Civil Rights", text: "The 24th Amendment, ratified in 1964, abolished the poll tax — a fee required to vote that had long been used to block poor Black citizens from the ballot box." },
+  { cat: "Civil Rights", text: "Claudette Colvin was a 15-year-old who refused to give up her bus seat in Montgomery nine months before Rosa Parks. Civil rights leaders chose Parks as the public face of the movement." },
+  { cat: "Civil Rights", text: "The 'Letter from Birmingham Jail,' written by Dr. King in April 1963 from a jail cell, is one of the most powerful and philosophically rigorous defenses of civil disobedience ever written." },
+  { cat: "Civil Rights", text: "Ida B. Wells refused to give up her railroad car seat in 1884 — 71 years before Rosa Parks — and sued the railroad. A lower court ruled in her favor before the decision was overturned on appeal." },
+  { cat: "Civil Rights", text: "Ruby Bridges was just six years old in 1960 when she became the first Black child to desegregate an all-white elementary school in New Orleans, escorted by federal marshals each day." },
+  { cat: "Civil Rights", text: "Fannie Lou Hamer's testimony at the 1964 Democratic National Convention was so powerful that President Johnson called a surprise press conference to pull cameras away from live coverage." },
+  { cat: "Civil Rights", text: "James Meredith integrated the University of Mississippi in 1962, requiring the deployment of 500 federal marshals and 3,000 troops after riots broke out on campus." },
+  { cat: "Civil Rights", text: "The Student Nonviolent Coordinating Committee (SNCC), founded in 1960, organized sit-ins, Freedom Rides, and dangerous voter registration drives across the Deep South." },
+  { cat: "Civil Rights", text: "The Loving v. Virginia Supreme Court ruling in 1967 struck down laws banning interracial marriage in 16 states, ruling such laws unconstitutional under the 14th Amendment." },
+  { cat: "Civil Rights", text: "Angela Davis, a professor and activist, became one of the most prominent figures in the Black Power movement and remains a leading voice for prison abolition and social justice." },
+
+  // ── Music ─────────────────────────────────────────────────────────────────────
+  { cat: "Music", text: "Sister Rosetta Tharpe is called the 'Godmother of Rock and Roll.' Her 1930s–40s electric guitar work directly influenced Elvis Presley, Little Richard, and Johnny Cash." },
+  { cat: "Music", text: "The blues genre originated in the Deep South among African Americans in the late 19th century, drawing from spirituals, field hollers, work songs, and West African musical traditions." },
+  { cat: "Music", text: "Louis Armstrong, born in New Orleans in 1901, became one of the most influential musicians in all of American history, helping define jazz improvisation and popular music itself." },
+  { cat: "Music", text: "Ella Fitzgerald, known as the 'First Lady of Song,' won 13 Grammy Awards, is the most nominated woman in Grammy history, and recorded over 200 albums during her career." },
+  { cat: "Music", text: "Berry Gordy founded Motown Records in Detroit in 1959 with an $800 loan, building one of the most successful record labels in history and a beacon of Black cultural excellence." },
+  { cat: "Music", text: "Aretha Franklin was the first woman inducted into the Rock and Roll Hall of Fame in 1987. She won 18 Grammy Awards and is widely recognized as the greatest soul singer of all time." },
+  { cat: "Music", text: "Hip-hop was born at a party hosted by DJ Kool Herc in the South Bronx on August 11, 1973 — widely regarded as the official birth date of one of the world's most influential genres." },
+  { cat: "Music", text: "Jimi Hendrix is widely considered the greatest electric guitarist in history, revolutionizing rock music in the late 1960s with albums like 'Are You Experienced' and 'Electric Ladyland.'" },
+  { cat: "Music", text: "Michael Jackson's 'Thriller' (1982) is still the best-selling album of all time, with an estimated 70 million copies sold worldwide and a music video that transformed the art form." },
+  { cat: "Music", text: "Billie Holiday's 1939 recording of 'Strange Fruit,' a protest against lynching, is widely regarded as one of the first great protest songs in American music history." },
+  { cat: "Music", text: "Chuck Berry wrote some of rock and roll's earliest defining songs, including 'Johnny B. Goode,' and is called the 'Father of Rock and Roll' for shaping the genre's entire vocabulary." },
+  { cat: "Music", text: "Jazz, born in New Orleans around 1900 by blending African rhythms, blues, and European harmonies, is widely considered America's first original art form." },
+  { cat: "Music", text: "Stevie Wonder released five consecutive critically acclaimed studio albums between 1972 and 1976 — a creative stretch many consider the greatest run in pop music history." },
+  { cat: "Music", text: "James Brown, the 'Godfather of Soul,' pioneered funk music and is the most-sampled artist in hip-hop history, making him a direct architect of modern popular music." },
+  { cat: "Music", text: "Nina Simone was a classically trained pianist who became a defining voice of the civil rights movement through songs like 'Mississippi Goddam' and 'To Be Young, Gifted and Black.'" },
+  { cat: "Music", text: "Kendrick Lamar became the first rapper to win the Pulitzer Prize for Music in 2018 for his album 'DAMN.,' recognized for its 'virtuosic song collection unified by its vernacular authenticity.'" },
+  { cat: "Music", text: "Prince wrote, performed, and produced much of his debut album at age 19, playing all 27 instruments himself — one of the most remarkable creative achievements in pop history." },
+  { cat: "Music", text: "Marvin Gaye's 'What's Going On' (1971) is frequently ranked among the greatest albums ever made, blending lush Motown soul with urgent social commentary." },
+  { cat: "Music", text: "The drum was so central to African American expression during slavery that slave owners across the South eventually banned enslaved people from owning or playing drums." },
+  { cat: "Music", text: "Miles Davis's 'Kind of Blue' (1959) is the best-selling jazz album of all time and fundamentally changed the language of jazz, introducing modal jazz to a wide audience." },
+  { cat: "Music", text: "Beyoncé has won more Grammy Awards than any other artist in history, with 32 wins as of 2024, redefining the scale of what a single artist's Grammy career can look like." },
+  { cat: "Music", text: "Scott Joplin, the 'King of Ragtime,' composed 'Maple Leaf Rag' in 1899 — the first sheet music in American history to sell over one million copies." },
+  { cat: "Music", text: "The Apollo Theater in Harlem, opened in 1934, launched the careers of Ella Fitzgerald, James Brown, Stevie Wonder, Michael Jackson, and countless others at its legendary Amateur Night." },
+  { cat: "Music", text: "Bessie Smith, the 'Empress of the Blues,' was the highest-paid Black entertainer of the 1920s and influenced virtually every major blues and jazz singer who followed." },
+  { cat: "Music", text: "John Coltrane's 'A Love Supreme' (1965) is considered one of the greatest jazz recordings in history — as much a spiritual work as a musical one — and has never gone out of print." },
+
+  // ── Sports ────────────────────────────────────────────────────────────────────
+  { cat: "Sports", text: "Jesse Owens won four gold medals at the 1936 Berlin Olympics, directly dismantling Hitler's claims of Aryan racial superiority on the world stage." },
+  { cat: "Sports", text: "Jackie Robinson broke Major League Baseball's color barrier on April 15, 1947. The date is now celebrated annually as Jackie Robinson Day across all of MLB." },
+  { cat: "Sports", text: "Muhammad Ali is widely regarded as the greatest boxer of all time. He was also a prominent civil rights activist who refused military induction and sacrificed years of his career for his beliefs." },
+  { cat: "Sports", text: "Serena Williams has won 23 Grand Slam singles titles in the Open Era — the most by any player — and is widely considered the greatest tennis player in history, male or female." },
+  { cat: "Sports", text: "Arthur Ashe became the first Black man to win Wimbledon, the U.S. Open, and the Australian Open, and used his platform tirelessly as a champion for human rights." },
+  { cat: "Sports", text: "Wilma Rudolph was told as a child she would never walk normally after having polio and scarlet fever. She went on to win three gold medals at the 1960 Rome Olympics, becoming the world's fastest woman." },
+  { cat: "Sports", text: "The Harlem Globetrotters were founded in 1926 and became global ambassadors for basketball and Black athletic excellence, performing in over 120 countries across their history." },
+  { cat: "Sports", text: "Jack Johnson became the first Black heavyweight boxing champion in 1908, triggering such fierce backlash that Congress passed a law banning the transport of fight films across state lines." },
+  { cat: "Sports", text: "Florence Griffith Joyner, 'FloJo,' set world records in the 100m (10.49s) and 200m (21.34s) at the 1988 Seoul Olympics. Both records still stand today." },
+  { cat: "Sports", text: "Bill Russell won 11 NBA championships with the Boston Celtics in 13 seasons and became the first Black head coach in major American professional sports in 1966." },
+  { cat: "Sports", text: "Althea Gibson became the first Black athlete to compete at Wimbledon in 1951 and was the first Black person to win a Grand Slam title, paving the way for generations of Black tennis stars." },
+  { cat: "Sports", text: "Kareem Abdul-Jabbar scored 38,387 points in his NBA career, holding the all-time scoring record for 39 years until LeBron James surpassed it in 2023." },
+  { cat: "Sports", text: "Simone Biles is the most decorated gymnast in World Championship history, with 30 world championship medals, and is widely considered the greatest gymnast of all time." },
+  { cat: "Sports", text: "The Negro Leagues produced legendary players including Josh Gibson, Satchel Paige, Cool Papa Bell, and Oscar Charleston — many of whom were argued by historians to be as great as any MLB star." },
+  { cat: "Sports", text: "The iconic image of Tommie Smith and John Carlos raising their fists at the 1968 Mexico City Olympics, protesting racial injustice, became one of the most powerful symbols in sports history." },
+  { cat: "Sports", text: "Wilt Chamberlain scored 100 points in a single NBA game on March 2, 1962 — a record that has never been matched in over 60 years of professional basketball." },
+
+  // ── Literature & Arts ─────────────────────────────────────────────────────────
+  { cat: "Literature & Arts", text: "Toni Morrison became the first African American to win the Nobel Prize in Literature in 1993, honored for novels like 'Beloved,' 'Song of Solomon,' and 'The Bluest Eye.'" },
+  { cat: "Literature & Arts", text: "Langston Hughes was a central figure of the Harlem Renaissance whose poetry captured the joys, sorrows, and dreams of African American life with unmatched directness and warmth." },
+  { cat: "Literature & Arts", text: "James Baldwin's essays and novels — including 'The Fire Next Time' and 'Go Tell It on the Mountain' — are cornerstones of American literature and moral writing." },
+  { cat: "Literature & Arts", text: "Maya Angelou's autobiography 'I Know Why the Caged Bird Sings' (1969) became one of the first nonfiction bestsellers by a Black woman and is now a staple of American literary education." },
+  { cat: "Literature & Arts", text: "Gwendolyn Brooks became the first African American to win the Pulitzer Prize, awarded in 1950 for her poetry collection 'Annie Allen,' which depicted life in Chicago's Black neighborhoods." },
+  { cat: "Literature & Arts", text: "Zora Neale Hurston's novel 'Their Eyes Were Watching God' (1937) was out of print for decades before Alice Walker championed its rediscovery in the 1970s. It is now a literary classic." },
+  { cat: "Literature & Arts", text: "Jacob Lawrence's Migration Series (1940–41), 60 panels depicting the Great Migration of African Americans northward, was the first work by a Black artist acquired by a major American museum." },
+  { cat: "Literature & Arts", text: "Gordon Parks became the first Black photographer and director at Life magazine and later directed 'Shaft' (1971), one of the defining films of the Blaxploitation era." },
+  { cat: "Literature & Arts", text: "Jean-Michel Basquiat rose from street graffiti in New York City to become one of the most celebrated Neo-Expressionist painters in history, with works selling for over $100 million today." },
+  { cat: "Literature & Arts", text: "Octavia Butler was the first science fiction writer of any background to receive a MacArthur 'Genius' Fellowship, and her speculative novels remain profoundly relevant to questions of race and power." },
+  { cat: "Literature & Arts", text: "Colson Whitehead became the first author since John Updike to win back-to-back Pulitzer Prizes for Fiction, for 'The Underground Railroad' (2017) and 'The Nickel Boys' (2020)." },
+  { cat: "Literature & Arts", text: "Kara Walker's large-scale silhouette installations explore the antebellum South and the long shadow of slavery in American visual culture with unflinching clarity." },
+  { cat: "Literature & Arts", text: "Romare Bearden's collages, blending African American experience with modernist forms, are considered among the most important American artworks of the 20th century." },
+  { cat: "Literature & Arts", text: "Alex Haley's 'Roots: The Saga of an American Family' (1976) sparked an unprecedented national wave of interest in genealogy and African American family history." },
+  { cat: "Literature & Arts", text: "Richard Wright's 'Native Son' (1940) was the first book by a Black author selected by the Book-of-the-Month Club and became an instant national bestseller." },
+  { cat: "Literature & Arts", text: "Lorraine Hansberry was the youngest American playwright and first Black dramatist to win the New York Drama Critics Circle Award, for 'A Raisin in the Sun' in 1959." },
+  { cat: "Literature & Arts", text: "Augusta Savage was a Harlem Renaissance sculptor whose powerful work depicted African American life, and she trained a generation of artists including Jacob Lawrence and Norman Lewis." },
+
+  // ── Politics & Firsts ─────────────────────────────────────────────────────────
+  { cat: "Politics & Firsts", text: "Barack Obama became the 44th President of the United States in 2009, the first African American ever to hold the nation's highest office." },
+  { cat: "Politics & Firsts", text: "Kamala Harris became the first Black American and first person of South Asian descent to serve as Vice President of the United States, inaugurated in January 2021." },
+  { cat: "Politics & Firsts", text: "Hiram Revels became the first African American elected to the U.S. Senate in 1870, filling the seat previously held by Jefferson Davis." },
+  { cat: "Politics & Firsts", text: "Shirley Chisholm was the first Black woman elected to Congress in 1968, and in 1972 she became the first Black person and first woman to seek a major U.S. party's presidential nomination." },
+  { cat: "Politics & Firsts", text: "Colin Powell became the first Black U.S. Secretary of State in 2001, having previously become the first Black National Security Advisor (1987) and Chairman of the Joint Chiefs of Staff (1989)." },
+  { cat: "Politics & Firsts", text: "Condoleezza Rice succeeded Colin Powell as Secretary of State in 2005, becoming the first Black woman to hold the position and only the second woman ever." },
+  { cat: "Politics & Firsts", text: "Edward Brooke of Massachusetts became the first Black person popularly elected to the U.S. Senate when he won election in 1966, more than 90 years after Reconstruction." },
+  { cat: "Politics & Firsts", text: "Douglas Wilder became the first African American elected governor in U.S. history, serving as Governor of Virginia from 1990 to 1994." },
+  { cat: "Politics & Firsts", text: "Ursula Burns became the first Black woman CEO of a Fortune 500 company when she took over as CEO of Xerox in 2009." },
+  { cat: "Politics & Firsts", text: "P.B.S. Pinchback became the first African American governor when he briefly served as Governor of Louisiana in 1872–73, during Reconstruction." },
+  { cat: "Politics & Firsts", text: "Maynard Jackson became the first Black mayor of Atlanta in 1973 and transformed the city into a national hub for Black business, culture, and political power." },
+  { cat: "Politics & Firsts", text: "Mary McLeod Bethune, born to formerly enslaved parents, founded a school that grew into Bethune-Cookman University and became the first Black woman to lead a federal agency, advising President FDR." },
+
+  // ── Military ──────────────────────────────────────────────────────────────────
+  { cat: "Military", text: "The Tuskegee Airmen were the first African American military aviators in the U.S. Armed Forces. They flew over 15,000 individual sorties in World War II, earning over 150 Distinguished Flying Crosses." },
+  { cat: "Military", text: "The Buffalo Soldiers were Black cavalry and infantry regiments established by Congress in 1866. The name was given to them by Plains Native Americans in respect of their fierce fighting spirit." },
+  { cat: "Military", text: "The 54th Massachusetts Infantry, one of the first Black Civil War regiments, became nationally famous for its heroic assault on Fort Wagner in 1863." },
+  { cat: "Military", text: "More than 180,000 Black soldiers served in the Union Army during the Civil War, representing approximately 10% of Union forces and playing a crucial role in the Confederate defeat." },
+  { cat: "Military", text: "Henry Ossian Flipper became the first African American to graduate from West Point Military Academy in 1877, in the face of intense social isolation from white cadets." },
+  { cat: "Military", text: "Dorie Miller was a Black Navy mess cook who took command of a machine gun during the attack on Pearl Harbor in 1941, shooting down enemy aircraft, and was later awarded the Navy Cross." },
+  { cat: "Military", text: "The Triple Nickles (555th Parachute Infantry Battalion) were the first Black paratroopers in U.S. history and were trained during World War II, though they faced racial barriers in deployment." },
+  { cat: "Military", text: "More than one million Black Americans served in World War II, fighting for freedoms abroad that were still denied to them at home — a contradiction that fueled the postwar civil rights movement." },
+  { cat: "Military", text: "Executive Order 9981, signed by President Truman in 1948, desegregated the U.S. Armed Forces — one of the first major federal desegregation actions in American history." },
+  { cat: "Military", text: "Robert Smalls was an enslaved man who commandeered a Confederate transport ship in 1862, sailed it to Union forces, and freed himself and his family. He later served five terms in Congress." },
+
+  // ── Culture & Heritage ────────────────────────────────────────────────────────
+  { cat: "Culture & Heritage", text: "Soul food has deep roots in West African cooking and was developed by enslaved Africans who used every part of the animal and grew their own vegetables to sustain their communities." },
+  { cat: "Culture & Heritage", text: "Juneteenth, celebrated on June 19, marks the 1865 day enslaved people in Galveston, Texas finally learned of their freedom — more than two years after the Emancipation Proclamation was issued." },
+  { cat: "Culture & Heritage", text: "Cornrows are one of the oldest hairstyles in the world, with origins tracing back over 3,000 years to African cultures, long predating their modern associations." },
+  { cat: "Culture & Heritage", text: "The Gullah Geechee people of the South Carolina and Georgia coast have preserved some of the most direct and unbroken cultural and linguistic links to West Africa found anywhere in the United States." },
+  { cat: "Culture & Heritage", text: "Kwanzaa was created by Dr. Maulana Karenga in 1966 to celebrate seven core principles: unity, self-determination, collective work and responsibility, cooperative economics, purpose, creativity, and faith." },
+  { cat: "Culture & Heritage", text: "The Great Migration (1910–1970) saw six million African Americans leave the rural South for Northern and Western cities, profoundly reshaping American politics, music, labor, and culture." },
+  { cat: "Culture & Heritage", text: "Kente cloth, woven by the Ashanti people of Ghana, is one of the most widely recognized African textiles in the world and has become a global symbol of African cultural identity and pride." },
+  { cat: "Culture & Heritage", text: "The Underground Railroad was not an actual railroad — it was a secret network of safe houses, signals, and routes used by freedom seekers to escape slavery in the antebellum South." },
+  { cat: "Culture & Heritage", text: "The tradition of 'call and response' in African American church, music, and public life traces directly back to West African musical and spiritual practices, carried across generations." },
+  { cat: "Culture & Heritage", text: "Juneteenth became a federal holiday in the United States on June 17, 2021, when President Biden signed the Juneteenth National Independence Day Act into law." },
+  { cat: "Culture & Heritage", text: "African Americans founded the modern Pentecostal movement through the Azusa Street Revival of 1906, led by William J. Seymour — an event that transformed global Christianity." },
+  { cat: "Culture & Heritage", text: "Many English words are of African origin, including 'jazz,' 'yam,' 'banjo,' 'okra,' 'gumbo,' 'tote,' 'juke,' and 'funky,' reflecting the profound African influence on American language." },
+  { cat: "Culture & Heritage", text: "The historically Black neighborhood of Bronzeville in Chicago, known as the 'Black Metropolis,' became one of the most vibrant African American cultural and political centers during the Great Migration era." },
+  { cat: "Culture & Heritage", text: "Historically Black Colleges and Universities (HBCUs) produce approximately 80% of Black judges, 50% of Black lawyers, and 40% of Black doctors in the United States." },
+  { cat: "Culture & Heritage", text: "The ring shout — a counterclockwise circle dance performed by enslaved Africans in praise houses — is considered the oldest surviving African American performance tradition." },
+
+  // ── Film & Television ─────────────────────────────────────────────────────────
+  { cat: "Film & Television", text: "Hattie McDaniel won the Academy Award for Best Supporting Actress for 'Gone with the Wind' in 1940, becoming the first Black person to win an Oscar." },
+  { cat: "Film & Television", text: "Sidney Poitier became the first Black man to win the Academy Award for Best Actor in 1964 for 'Lilies of the Field,' and used his entire career to transform Hollywood's depiction of Black Americans." },
+  { cat: "Film & Television", text: "'Roots' (1977), based on Alex Haley's novel, was one of the most watched television events in American history, with the series finale drawing an estimated 100 million viewers." },
+  { cat: "Film & Television", text: "'Black Panther' (2018) became the first superhero film nominated for the Academy Award for Best Picture and grossed over $1.3 billion worldwide, becoming a cultural phenomenon." },
+  { cat: "Film & Television", text: "Ava DuVernay's 'Selma' (2014) was the first film directed by a Black woman to be nominated for the Academy Award for Best Picture." },
+  { cat: "Film & Television", text: "Oprah Winfrey launched her television show in 1986 and became the first Black female billionaire. Her media empire includes television networks, film production, and a magazine." },
+  { cat: "Film & Television", text: "'A Raisin in the Sun' by Lorraine Hansberry (1959) was the first play by a Black woman produced on Broadway, and the first directed by a Black director (Lloyd Richards) in 58 years." },
+  { cat: "Film & Television", text: "Barry Jenkins' 'Moonlight' (2016) became the first film with an all-Black cast to win the Academy Award for Best Picture, and the first LGBTQ+ film to win the award." },
+  { cat: "Film & Television", text: "Diahann Carroll became the first Black woman to star in her own television series in a non-servant role with 'Julia' in 1968, marking a watershed moment in American television." },
+  { cat: "Film & Television", text: "'Boyz n the Hood' (1991), directed by John Singleton at age 23, made him the youngest filmmaker and first Black filmmaker ever nominated for the Academy Award for Best Director." },
+  { cat: "Film & Television", text: "Tyler Perry built one of the most successful entertainment empires in Hollywood history, becoming the first Black American to own a major film and television production studio outright." },
+  { cat: "Film & Television", text: "Cicely Tyson received an honorary Oscar in 2018, recognizing a career spanning seven decades during which she famously only accepted roles that portrayed Black women with dignity." },
+
+  // ── African Heritage ──────────────────────────────────────────────────────────
+  { cat: "African Heritage", text: "Mansa Musa, emperor of the Mali Empire in the 14th century, is considered the wealthiest person who has ever lived, with an estimated fortune equivalent to $400 billion in today's dollars." },
+  { cat: "African Heritage", text: "Timbuktu, in present-day Mali, was a major center of Islamic scholarship and global trade in the 14th–15th centuries, home to the University of Sankore with 25,000 students." },
+  { cat: "African Heritage", text: "The Transatlantic Slave Trade, which lasted from the 16th to the 19th century, forcibly transported an estimated 12–15 million Africans to the Americas in one of history's greatest crimes against humanity." },
+  { cat: "African Heritage", text: "The Haitian Revolution (1791–1804) was the only successful slave revolution in world history, resulting in the founding of Haiti as the first Black republic and the second independent nation in the Western Hemisphere." },
+  { cat: "African Heritage", text: "Toussaint L'Ouverture, formerly enslaved, led the Haitian Revolution and became one of the most brilliant military strategists of his era, defeating the armies of Spain, Britain, and France." },
+  { cat: "African Heritage", text: "The Kingdom of Axum (100–940 CE), in present-day Ethiopia and Eritrea, was one of the world's great ancient empires, controlling key trade routes between Africa, Arabia, and India." },
+  { cat: "African Heritage", text: "The Bantu expansion (c. 1000 BCE–1500 CE) was one of the most significant population movements in human history, spreading language, iron-working, and agriculture across sub-Saharan Africa." },
+  { cat: "African Heritage", text: "The Kingdom of Kush in present-day Sudan predates some phases of ancient Egypt, developed its own distinct writing system called Meroitic script, and ruled Egypt itself as pharaohs for nearly a century." },
+  { cat: "African Heritage", text: "Over 35 million people of African descent live in Brazil — the largest African diaspora population outside of Africa — carrying cultural traditions that trace directly to West and Central Africa." },
+  { cat: "African Heritage", text: "The Yoruba people of West Africa developed Ifá, one of the world's most complex spiritual traditions, which UNESCO recognized as part of humanity's intangible cultural heritage." },
+  { cat: "African Heritage", text: "The Zulu Kingdom under Shaka Zulu (1816–1828) built one of the most powerful military empires in African history, with innovative tactics — the 'bull horn' formation — still studied in military schools." },
+  { cat: "African Heritage", text: "African cultures had developed over 300 distinct writing systems before European colonization, including Ge'ez, Tifinagh, Nsibidi, and Vai — disproving the colonial myth that Africa had no written tradition." },
+  { cat: "African Heritage", text: "Sundiata Keita, founder of the Mali Empire in 1235, is the subject of the Epic of Sundiata — one of the greatest oral epics in African history, still performed by griots today." },
+  { cat: "African Heritage", text: "The Great Zimbabwe, built between the 11th and 15th centuries, was a major city and capital of the Kingdom of Zimbabwe, featuring massive stone walls constructed without mortar." },
+
+  // ── Business & Entrepreneurship ───────────────────────────────────────────────
+  { cat: "Business & Entrepreneurship", text: "Madam C.J. Walker became the first self-made female millionaire in America — of any race — in the early 1900s, building a hair care empire and employing thousands of Black women salespeople." },
+  { cat: "Business & Entrepreneurship", text: "The Greenwood District of Tulsa, Oklahoma, known as 'Black Wall Street,' was one of the most prosperous Black communities in American history before it was deliberately destroyed in the 1921 Tulsa Race Massacre." },
+  { cat: "Business & Entrepreneurship", text: "John H. Johnson founded Johnson Publishing Company in 1942, creating Ebony and Jet magazines — the most widely read Black publications in U.S. history, reaching millions of readers for decades." },
+  { cat: "Business & Entrepreneurship", text: "Robert Abbott founded The Chicago Defender in 1905. The newspaper became one of the most powerful voices for African American civil rights and helped spark the Great Migration northward." },
+  { cat: "Business & Entrepreneurship", text: "Berry Gordy turned an $800 loan into Motown Records, one of the most successful record labels in history, making it the largest Black-owned business in the United States for many years." },
+  { cat: "Business & Entrepreneurship", text: "Bob Johnson founded BET (Black Entertainment Television) in 1980 and sold it to Viacom in 2001 for $3 billion, becoming the first Black American billionaire." },
+  { cat: "Business & Entrepreneurship", text: "Daymond John founded FUBU ('For Us By Us') in his mother's Queens home with $40 and grew it into a $6 billion streetwear brand by the late 1990s." },
+  { cat: "Business & Entrepreneurship", text: "Reginald F. Lewis became the first Black American to build a billion-dollar business empire when he acquired Beatrice International in 1987 in a $985 million leveraged buyout." },
+  { cat: "Business & Entrepreneurship", text: "A.G. Gaston, born to sharecroppers in Alabama in 1892, built a business empire worth hundreds of millions of dollars, including insurance companies, banks, a hotel, and construction firms." },
+  { cat: "Business & Entrepreneurship", text: "Sam Cooke founded his own record label and publishing company, becoming one of the first Black artists to own his masters — a business model that influenced generations of artists including Prince and Jay-Z." },
+
+  // ── Education & Scholarship ───────────────────────────────────────────────────
+  { cat: "Education & Scholarship", text: "Howard University, founded in 1867 in Washington D.C., is one of the most prestigious HBCUs and has produced more Black Ph.D.s than any other university in the world." },
+  { cat: "Education & Scholarship", text: "W.E.B. Du Bois became the first African American to earn a Ph.D. from Harvard University in 1895, then went on to co-found the NAACP and write 'The Souls of Black Folk,' a foundational text of Black intellectual life." },
+  { cat: "Education & Scholarship", text: "Booker T. Washington founded the Tuskegee Normal and Industrial Institute in Alabama in 1881 with a $2,000 state appropriation, building the school largely through the labor of students themselves." },
+  { cat: "Education & Scholarship", text: "Frederick Douglass taught himself to read as an enslaved person. He later wrote one of the most influential autobiographies in American history and became the most photographed American of the 19th century." },
+  { cat: "Education & Scholarship", text: "Charles Hamilton Houston, Thurgood Marshall's mentor, was the NAACP's chief legal counsel and strategically dismantled school segregation case by case for two decades before Brown v. Board of Education." },
+  { cat: "Education & Scholarship", text: "Dr. Mary McLeod Bethune started her school in Daytona Beach with $1.50, five girl students, and packing crates for desks. It grew into Bethune-Cookman University, a four-year accredited institution." },
+  { cat: "Education & Scholarship", text: "Dr. Carter G. Woodson founded 'Negro History Week' in 1926 — the precursor to Black History Month — choosing February for its proximity to the birthdays of Abraham Lincoln and Frederick Douglass." },
+  { cat: "Education & Scholarship", text: "The Freedom Schools, established by SNCC in Mississippi in 1964, provided Black children with rigorous academic and civic education that the segregated public school system deliberately denied them." },
+  { cat: "Education & Scholarship", text: "Spelman College in Atlanta, founded in 1881, is the oldest HBCU for women in the United States and consistently ranks among the top liberal arts colleges in America." },
+  { cat: "Education & Scholarship", text: "The Schomburg Center for Research in Black Culture in Harlem is one of the world's leading research libraries devoted to the history and culture of African Americans and the African diaspora." },
+
+  // ── Resistance & Revolution ───────────────────────────────────────────────────
+  { cat: "Resistance & Revolution", text: "Harriet Tubman made 13 missions to rescue approximately 70 enslaved people via the Underground Railroad and later said, 'I never ran my train off the track and I never lost a passenger.'" },
+  { cat: "Resistance & Revolution", text: "Harriet Tubman served as a Union spy and scout during the Civil War, leading an armed raid at the Combahee River in 1863 that liberated over 700 enslaved people in a single night." },
+  { cat: "Resistance & Revolution", text: "Nat Turner led one of the most significant slave rebellions in U.S. history in 1831 in Southampton County, Virginia. His revolt intensified national debates over slavery and led to stricter slave codes." },
+  { cat: "Resistance & Revolution", text: "Denmark Vesey, a freed enslaved man who purchased his own freedom, organized one of the largest planned slave revolts in U.S. history in 1822. Though thwarted, he became an enduring symbol of resistance." },
+  { cat: "Resistance & Revolution", text: "Sojourner Truth, born Isabella Baumfree, was an abolitionist and women's rights activist who delivered the legendary 'Ain't I a Woman?' speech in 1851 in Akron, Ohio." },
+  { cat: "Resistance & Revolution", text: "The phrase '40 acres and a mule' comes from Special Field Order No. 15, issued by Gen. Sherman in January 1865, distributing confiscated Confederate land to freedpeople — a promise soon revoked by President Andrew Johnson." },
+  { cat: "Resistance & Revolution", text: "Solomon Northup was a free Black man who was kidnapped in Washington D.C. and sold into slavery, spending 12 years enslaved before being freed. His memoir became the basis for '12 Years a Slave.'" },
+  { cat: "Resistance & Revolution", text: "The Black Codes enacted across the South after the Civil War were state laws designed to restrict the freedom of Black Americans and trap them in low-wage labor, effectively re-creating the conditions of slavery." },
+  { cat: "Resistance & Revolution", text: "Marcus Garvey's Universal Negro Improvement Association (UNIA) was the largest Black mass movement in history during the 1920s, with chapters in 43 countries and millions of members worldwide." },
+  { cat: "Resistance & Revolution", text: "The Combahee River Collective, a Black feminist organization founded in 1974, produced a 1977 statement that coined the concept of 'identity politics' and laid the intellectual groundwork for intersectionality." },
+
+  // ── NASA & Science ────────────────────────────────────────────────────────────
+  { cat: "NASA & Science", text: "Katherine Johnson's orbital mechanics calculations were so trusted that astronaut John Glenn refused to fly unless she personally verified the computer's trajectory numbers before his 1962 orbital mission." },
+  { cat: "NASA & Science", text: "Katherine Johnson, Dorothy Vaughan, and Mary Jackson were 'human computers' at NASA whose calculations were essential to the success of early U.S. space missions, as depicted in 'Hidden Figures.'" },
+  { cat: "NASA & Science", text: "Dorothy Vaughan became NASA's first Black manager and taught herself and her entire computing section the FORTRAN programming language, making them indispensable in the early computer age." },
+  { cat: "NASA & Science", text: "Mary Jackson became NASA's first Black female engineer in 1958, and in her later career advocated for the hiring and promotion of women and minorities throughout the agency." },
+  { cat: "NASA & Science", text: "Dr. Jemison's 1992 space shuttle mission made her the first Black woman in space. She carried a photo of Bessie Coleman — the first Black woman to earn a pilot's license — as a tribute." },
+  { cat: "NASA & Science", text: "Dr. Bernard Harris became the first African American to walk in space when he performed an EVA during Space Shuttle Discovery's 1995 mission." },
+
+  // ── More Icons & Trailblazers ──────────────────────────────────────────────────
+  { cat: "Icons & Trailblazers", text: "Josephine Baker was a groundbreaking entertainer in Paris, a French Resistance spy in World War II, and marched alongside Dr. King at the 1963 March on Washington — one of history's most extraordinary lives." },
+  { cat: "Icons & Trailblazers", text: "Josephine Baker adopted 12 children of different races and nationalities, calling them her 'Rainbow Tribe' — a living statement against racism and for the possibility of universal human brotherhood." },
+  { cat: "Icons & Trailblazers", text: "Paul Robeson was one of the most multitalented Americans of the 20th century: All-American athlete, Columbia Law School graduate, world-famous singer, acclaimed actor, and fierce civil rights activist." },
+  { cat: "Icons & Trailblazers", text: "Benjamin Banneker, a free Black man, helped survey the land for Washington D.C. in 1791 and published an almanac with astronomical calculations alongside letters calling on Thomas Jefferson to end slavery." },
+  { cat: "Icons & Trailblazers", text: "Frederick Douglass became the most photographed American of the 19th century, deliberately sitting for portraits to create dignified, authoritative images of a Black man — a counter to racist caricature." },
+  { cat: "Icons & Trailblazers", text: "Dr. Martin Luther King Jr.'s 'I Have a Dream' speech, delivered before 250,000 people at the Lincoln Memorial on August 28, 1963, is widely considered one of the greatest speeches in all of human history." },
+  { cat: "Icons & Trailblazers", text: "The Harlem Renaissance of the 1920s produced not only artists and musicians but also great thinkers — Marcus Garvey, W.E.B. Du Bois, Alain Locke, and Claude McKay — who redefined Black intellectual and cultural identity." },
+  { cat: "Icons & Trailblazers", text: "The first African American newspaper, Freedom's Journal, was published in New York City on March 16, 1827, with the founding declaration: 'We wish to plead our own cause; too long have others spoken for us.'" },
+  { cat: "Icons & Trailblazers", text: "James Baldwin said: 'Not everything that is faced can be changed, but nothing can be changed until it is faced' — a sentence that captures the entire tradition of Black American truth-telling." },
+  { cat: "Icons & Trailblazers", text: "Bessie Coleman became the first Black American and first Native American to earn a pilot's license in 1921 — she had to travel to France to get it because American flight schools refused to accept her." },
+  { cat: "Icons & Trailblazers", text: "The Black Is Beautiful movement of the 1960s encouraged African Americans to embrace their natural beauty and reject Eurocentric standards — a cultural shift that transformed fashion, media, and self-perception." },
+  { cat: "Icons & Trailblazers", text: "The Black Arts Movement of the 1960s–70s, often called the artistic wing of Black Power, produced poetry, theater, and visual art that insisted Black creative work be judged on Black cultural terms." },
+  { cat: "Icons & Trailblazers", text: "Kwame Ture (Stokely Carmichael) popularized the phrase 'Black Power' during a 1966 march in Mississippi, sparking a national debate about Black identity, self-determination, and liberation." },
+
+  // ── Harlem Renaissance ────────────────────────────────────────────────────────
+  { cat: "Harlem Renaissance", text: "The Harlem Renaissance of the 1920s and 1930s was an explosion of African American art, literature, music, and intellectual life that made Harlem the cultural capital of Black America." },
+  { cat: "Harlem Renaissance", text: "Claude McKay's 1919 poem 'If We Must Die' — written in response to anti-Black violence — was read aloud in the British Parliament during World War II as a call to resist fascism." },
+  { cat: "Harlem Renaissance", text: "Alain Locke, the first Black Rhodes Scholar, edited 'The New Negro' (1925), the defining anthology of the Harlem Renaissance, which announced a new era of Black cultural pride." },
+  { cat: "Harlem Renaissance", text: "Countee Cullen won more major literary prizes than any other Black writer of his era and was one of the most celebrated poets of the Harlem Renaissance by the time he was 22 years old." },
+  { cat: "Harlem Renaissance", text: "The Cotton Club in Harlem, open from 1923 to 1940, was a top-tier jazz venue where Duke Ellington, Cab Calloway, and Louis Armstrong performed — yet it maintained a whites-only admission policy." },
+  { cat: "Harlem Renaissance", text: "Duke Ellington composed over 3,000 pieces of music and led one of the most celebrated jazz orchestras in history for more than five decades." },
+  { cat: "Harlem Renaissance", text: "Nella Larsen was one of the first African American women to win a Guggenheim Fellowship. Her novel 'Passing' (1929) explored race and identity in ways that resonate powerfully today." },
+
+  // ── Dance & Performance ───────────────────────────────────────────────────────
+  { cat: "Dance & Performance", text: "Alvin Ailey's 1960 masterpiece 'Revelations,' set to African American spirituals and blues, is the most performed ballet in history and has been seen by an estimated 23 million people worldwide." },
+  { cat: "Dance & Performance", text: "Bill 'Bojangles' Robinson was the highest-paid Black entertainer of the 1930s, known for his extraordinary tap dancing and his role in films alongside Shirley Temple." },
+  { cat: "Dance & Performance", text: "Judith Jamison's performance of Alvin Ailey's solo 'Cry' (1971) — dedicated to 'all Black women everywhere' — is one of the most celebrated performances in the history of American dance." },
+  { cat: "Dance & Performance", text: "The Lindy Hop, the foundational swing dance born in Harlem in the late 1920s, was a Black dance form that influenced every form of popular social dancing that followed." },
+  { cat: "Dance & Performance", text: "Savion Glover revolutionized tap dance in the 1990s, developing a raw, percussive style he called 'hitting' — which honored tap's African American roots while pushing the form into new territory." },
+
+  // ── Journalism & Media ────────────────────────────────────────────────────────
+  { cat: "Journalism & Media", text: "Ida B. Wells-Barnett was one of America's earliest investigative journalists, using data and first-hand reporting to document hundreds of lynchings at a time when almost no one else dared." },
+  { cat: "Journalism & Media", text: "Carl T. Rowan became the first Black member of the National Security Council and served as the first Black ambassador to Finland before becoming one of America's most widely syndicated columnists." },
+  { cat: "Journalism & Media", text: "Charlayne Hunter-Gault was one of the first two Black students to enroll at the University of Georgia in 1961 and later became one of the most distinguished journalists at The New York Times and PBS NewsHour." },
+  { cat: "Journalism & Media", text: "Robert Maynard became the first African American to own a major metropolitan daily newspaper when he purchased the Oakland Tribune in 1983." },
+  { cat: "Journalism & Media", text: "Black-owned radio stations played a crucial role in the civil rights movement, broadcasting information, organizing calls, and providing a platform for Black voices during the 1950s and 1960s." },
+
+  // ── Fashion ───────────────────────────────────────────────────────────────────
+  { cat: "Fashion", text: "Patrick Kelly was the first American — and the first Black designer — to be admitted to the Chambre Syndicale du Prêt-à-Porter in Paris, the governing body of French fashion, in 1988." },
+  { cat: "Fashion", text: "Dapper Dan of Harlem pioneered luxury streetwear in the 1980s, creating custom logo-branded clothing for hip-hop artists and athletes years before luxury brands officially entered street culture." },
+  { cat: "Fashion", text: "Virgil Abloh became the first Black American artistic director of a French luxury fashion house when he was appointed to Louis Vuitton's menswear division in 2018." },
+  { cat: "Fashion", text: "The Afro hairstyle, embraced widely in the late 1960s and '70s, became a powerful political symbol of Black pride, self-determination, and the rejection of Eurocentric beauty standards." },
+  { cat: "Fashion", text: "Tracee Ellis Ross became the first Black woman in over three decades to win a Golden Globe Award for Best Actress in a Musical or Comedy TV Series, for 'Black-ish' in 2017." },
+
+  // ── Health & Medicine ─────────────────────────────────────────────────────────
+  { cat: "Health & Medicine", text: "Dr. Rebecca Lee Crumpler became the first Black woman to earn a medical degree in the United States in 1864. After the Civil War, she treated formerly enslaved people in Virginia." },
+  { cat: "Health & Medicine", text: "Provident Hospital in Chicago, founded by Dr. Daniel Hale Williams in 1891, was the first Black-owned hospital in America and trained generations of Black medical professionals." },
+  { cat: "Health & Medicine", text: "The Meharry Medical College, founded in 1876 in Nashville, is one of the oldest HBCUs for the health sciences and has trained more than 40% of all Black dentists and physicians in U.S. history." },
+  { cat: "Health & Medicine", text: "Dr. Charles R. Drew's blood plasma preservation research during World War II directly saved thousands of soldiers' lives and formed the scientific foundation for every blood bank in the world today." },
+  { cat: "Health & Medicine", text: "The Tuskegee Syphilis Study (1932–1972), in which the U.S. government withheld treatment from Black men to observe disease progression, is one of the most notorious medical ethics violations in history, and its legacy continues to affect Black Americans' trust in healthcare." },
+
+  // ── Comedy & Stand-Up ─────────────────────────────────────────────────────────
+  { cat: "Comedy & Stand-Up", text: "Richard Pryor revolutionized stand-up comedy in the 1970s by drawing on his most painful personal experiences — addiction, racism, childhood — with unflinching honesty that changed the entire art form." },
+  { cat: "Comedy & Stand-Up", text: "Dick Gregory was one of the first Black comedians to perform for white audiences in mainstream venues in the early 1960s, and used comedy as a vehicle for civil rights activism throughout his career." },
+  { cat: "Comedy & Stand-Up", text: "Eddie Murphy's 'Delirious' (1983) and 'Raw' (1987) are two of the most successful and influential stand-up comedy films ever made, helping redefine what stand-up comedy could achieve." },
+  { cat: "Comedy & Stand-Up", text: "Dave Chappelle walked away from a $50 million Comedy Central deal in 2005, later returning to become one of the most acclaimed and controversial comedians working today, winning multiple Grammy Awards for Best Comedy Album." },
+  { cat: "Comedy & Stand-Up", text: "Moms Mabley (Loretta Mary Aiken) was a pioneering comedian who performed at the Apollo Theater and appeared on television decades before most Black entertainers had such access — becoming one of the best-selling comedy recording artists of the 1960s." },
+
+  // ── Community & Activism ──────────────────────────────────────────────────────
+  { cat: "Community & Activism", text: "The National Urban League, founded in 1910, is one of the oldest and largest community-based civil rights organizations in the United States, focused on economic empowerment." },
+  { cat: "Community & Activism", text: "The NAACP Legal Defense Fund, founded separately from the NAACP in 1940 by Thurgood Marshall, has argued more civil rights cases before the Supreme Court than any other legal organization." },
+  { cat: "Community & Activism", text: "The Poor People's Campaign, which Dr. King was organizing at the time of his 1968 assassination, called for a guaranteed annual income for all Americans, regardless of race — a vision still debated today." },
+  { cat: "Community & Activism", text: "The March for Our Lives (2018) included prominent Black youth activists who connected gun violence to police violence and systemic racism, centering Black communities most affected by gun deaths." },
+  { cat: "Community & Activism", text: "Black Lives Matter, founded in 2013 by Alicia Garza, Patrisse Cullors, and Opal Tometi in response to the acquittal of Trayvon Martin's killer, grew into one of the largest social movements in U.S. history." },
+
+  // ── More Music ────────────────────────────────────────────────────────────────
+  { cat: "Music", text: "Thelonious Monk was one of the most original composers in jazz history, developing a style so idiosyncratic that musicians are still studying and imitating it more than 50 years later." },
+  { cat: "Music", text: "Diana Ross and The Supremes had 12 number-one pop hits between 1964 and 1969 — the most of any American group at the time — and helped break Motown acts into the mainstream white market." },
+  { cat: "Music", text: "Run-DMC was the first hip-hop group to appear on the cover of Rolling Stone magazine and the first to go platinum, paving the way for hip-hop to be taken seriously by mainstream media." },
+  { cat: "Music", text: "Missy Elliott became the first female rapper inducted into the Rock and Roll Hall of Fame in 2023, recognized for a career that fundamentally changed how hip-hop videos and production sounded." },
+  { cat: "Music", text: "Nat King Cole became the first African American to host a nationally broadcast television variety show in 1956 — but the show was cancelled after one season when sponsors refused to support a Black-hosted program." },
+
+  // ── Sports (additional) ───────────────────────────────────────────────────────
+  { cat: "Sports", text: "Debi Thomas became the first Black athlete to win a medal at the Winter Olympics when she earned bronze in figure skating at the 1988 Calgary Games." },
+  { cat: "Sports", text: "Tiger Woods' victory at the 1997 Masters was by 12 strokes — the largest margin of victory in Masters history at the time — making him the tournament's first Black and first Asian-heritage champion at age 21." },
+  { cat: "Sports", text: "Cathy Freeman, of Aboriginal Australian heritage, lit the Olympic cauldron and won gold in the 400m at the 2000 Sydney Olympics, becoming one of the most powerful symbols of indigenous pride in sporting history." },
+  { cat: "Sports", text: "Venus and Serena Williams are the only two sisters in history to each win multiple Grand Slam singles titles, and they have played each other in 31 Grand Slam matches — the most prolific sibling rivalry in tennis." },
+  { cat: "Sports", text: "Michael Jordan won six NBA championships, five MVP awards, and six Finals MVP awards with the Chicago Bulls, and is widely considered the greatest basketball player of all time." },
+
+  // ── Writers & Thinkers ────────────────────────────────────────────────────────
+  { cat: "Literature & Arts", text: "bell hooks, the author of 'Ain't I a Woman?' and 'Feminist Theory: From Margin to Center,' became one of the most influential cultural critics in American intellectual life over five decades." },
+  { cat: "Literature & Arts", text: "W.E.B. Du Bois coined the concept of 'double consciousness' in 'The Souls of Black Folk' (1903) — the sense of 'always looking at one's self through the eyes of others' — a phrase still central to discussions of Black identity." },
+  { cat: "Literature & Arts", text: "N.K. Jemisin became the first author in history to win the Hugo Award for Best Novel three consecutive years (2016–2018), for each book in her 'Broken Earth' trilogy." },
+  { cat: "Literature & Arts", text: "Ralph Ellison's 'Invisible Man' (1952) won the National Book Award and is widely regarded as one of the greatest American novels of the 20th century, exploring the invisibility of Black identity in white America." },
+  { cat: "Literature & Arts", text: "Nikki Giovanni was one of the most celebrated poets of the Black Arts Movement and remains one of the most widely read living American poets, known for poems like 'Ego Trippin'' and 'Nikki-Rosa.'" },
+
+  // ── Spiritual & Cultural Life ─────────────────────────────────────────────────
+  { cat: "Culture & Heritage", text: "The African Methodist Episcopal (AME) Church, founded by Richard Allen in Philadelphia in 1816, was the first independent Black denomination in the United States and became a center of civil rights organizing." },
+  { cat: "Culture & Heritage", text: "Howard Thurman's 'Jesus and the Disinherited' (1949) deeply influenced Dr. Martin Luther King Jr.'s philosophy of nonviolent resistance. King carried the book with him throughout the Montgomery Bus Boycott." },
+  { cat: "Culture & Heritage", text: "The tradition of 'passing the hat' and collective giving in Black churches dates back to enslaved people pooling their meager resources to buy one another's freedom — a practice that formed the bedrock of Black mutual aid." },
+  { cat: "Culture & Heritage", text: "The 'second line' parade tradition in New Orleans — where a jazz band leads a funeral procession and mourners dance behind — is one of the most distinctive and celebrated African American cultural expressions in the world." },
+  { cat: "Culture & Heritage", text: "Millions of enslaved Africans and their descendants maintained spiritual connections to their homelands through syncretic traditions including Vodou in Haiti, Candomblé in Brazil, and Santería in Cuba." },
+
+  // ── Final 10 ──────────────────────────────────────────────────────────────────
+  { cat: "Icons & Trailblazers", text: "Shirley Ann Jackson became the first Black woman to earn a Ph.D. from MIT in 1973, and later became the first Black woman to chair the U.S. Nuclear Regulatory Commission." },
+  { cat: "Icons & Trailblazers", text: "Colin Kaepernick's decision to kneel during the national anthem in 2016 to protest police brutality became one of the most debated acts of protest in sports history, inspiring athletes worldwide." },
+  { cat: "Civil Rights", text: "The 13th Amendment abolished slavery in 1865 but included an exception for those convicted of crimes — a clause widely cited by scholars and activists as enabling forced prison labor that continues today." },
+  { cat: "Inventors & Scientists", text: "Dr. Vivien Thomas, a Black lab technician with no medical degree, developed the surgical technique to treat 'blue baby syndrome' in the 1940s. His work saved thousands of lives before his contributions were publicly recognized decades later." },
+  { cat: "Culture & Heritage", text: "The phrase 'jump the broom' — a wedding tradition — was a practice used by enslaved people who were legally forbidden from formally marrying. It has since been reclaimed as a meaningful African American wedding tradition." },
+  { cat: "Business & Entrepreneurship", text: "Magic Johnson built a business empire worth over $1 billion after retiring from basketball, investing in urban communities that larger corporations had long neglected, including movie theaters, Starbucks franchises, and real estate." },
+  { cat: "African Heritage", text: "The Dogon people of Mali possessed detailed astronomical knowledge about Sirius B — including its mass, orbit, and 50-year cycle — long before Western scientists could observe the star with telescopes." },
+  { cat: "Music", text: "Ella Fitzgerald had a vocal range of three octaves and the ability to improvise — 'scat singing' — with the same harmonic sophistication as any jazz instrumentalist, earning her the title 'First Lady of Song.'" },
+  { cat: "Literature & Arts", text: "Gordon Parks's 1961 Life magazine photo essay 'The Fontenelle Family' exposed the devastating realities of poverty in Harlem and changed the national conversation about urban poverty in America." },
+  { cat: "Icons & Trailblazers", text: "Dr. Cornel West, philosopher and public intellectual, has spent decades bringing the voices of Black prophetic tradition into mainstream academic and political discourse, authoring over 20 books including 'Race Matters' (1993)." },
+  { cat: "Music", text: "Whitney Houston's version of 'I Will Always Love You' from The Bodyguard (1992) is one of the best-selling singles in music history and held the record as the best-selling single by a woman for over two decades." },
+  { cat: "Sports", text: "Hank Aaron broke Babe Ruth's all-time home run record in 1974 while enduring a torrent of racist death threats — he received so much hate mail that the U.S. Post Office assigned a security detail to him." },
+  { cat: "Sports", text: "Jim Brown, Cleveland Browns running back from 1957 to 1965, is widely considered the greatest football player of all time and retired at his athletic peak to pursue civil rights activism and an acting career." },
+  { cat: "Inventors & Scientists", text: "Garrett Morgan's breathing device, invented in 1914, used damp cotton to filter smoke and was used to rescue workers trapped underground after a gas explosion in Cleveland, proving its life-saving value." },
+  { cat: "African Heritage", text: "Ethiopia is the only African nation to have successfully resisted European colonization during the Scramble for Africa, defeating Italy at the Battle of Adwa in 1896 in a victory that inspired anti-colonial movements worldwide." },
+  { cat: "Culture & Heritage", text: "The Harlem Shake — the original 1981 version — was a dance created in Harlem that bears no resemblance to the 2013 internet meme, and its cultural roots stretch back to West African traditional dance." },
+  { cat: "Civil Rights", text: "Fred Hampton, 21-year-old chairman of the Illinois Black Panther Party, was assassinated by Chicago police and FBI agents in a pre-dawn raid in 1969. He had been building a powerful multiracial coalition called the Rainbow Coalition." },
+  { cat: "Literature & Arts", text: "Dr. Henry Louis Gates Jr. founded and directs the Hutchins Center for African and African American Research at Harvard and has produced groundbreaking PBS documentary series on Black American genealogy and history." },
+  { cat: "Community & Activism", text: "The SNCC (Student Nonviolent Coordinating Committee) trained hundreds of young people in nonviolent direct action tactics, many of whom went on to become lifelong civil rights leaders, legislators, and community organizers." },
+  { cat: "Dance & Performance", text: "Gregory Hines, one of the greatest tap dancers in American history, helped revive tap as a serious art form in the 1970s–80s through his Broadway and film work, and trained a new generation of tap artists." },
+  { cat: "Fashion", text: "The tuxedo, when worn to the Met Gala or major events by Black celebrities like Billy Porter, Zendaya, or Lil Nas X, has become a canvas for cultural commentary on Black identity, gender, and expression." },
+  { cat: "Journalism & Media", text: "Ed Gordon, Tavis Smiley, and Melissa Harris-Perry are among the Black journalists and commentators who brought substantive coverage of African American communities to national broadcast television audiences." },
+  { cat: "Resistance & Revolution", text: "The Niagara Movement, founded by W.E.B. Du Bois and 28 other Black leaders in 1905, demanded full civil rights, voting rights, and an end to racial discrimination — laying the groundwork for the NAACP." },
+];
+
+const categories = ["All", ...new Set(facts.map(f => f.cat))];
+let activeCategory = "All";
+let filtered = [...facts];
+let currentIndex = 0;
+const seen = new Set();
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+shuffle(filtered);
+
+const cardEl      = document.getElementById('card');
+const factEl      = document.getElementById('card-fact');
+const catEl       = document.getElementById('card-category');
+const counterEl   = document.getElementById('card-counter');
+const fillEl      = document.getElementById('progress-fill');
+const seenEl      = document.getElementById('progress-seen');
+const filtersEl   = document.getElementById('filters');
+
+function renderFilters() {
+  filtersEl.innerHTML = '';
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (cat === activeCategory ? ' active' : '');
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      activeCategory = cat;
+      filtered = cat === 'All' ? [...facts] : facts.filter(f => f.cat === cat);
+      shuffle(filtered);
+      currentIndex = 0;
+      renderFilters();
+      showFact(0, false);
+    });
+    filtersEl.appendChild(btn);
+  });
+}
+
+function showFact(idx, animate = true) {
+  const fact = filtered[idx];
+  if (!fact) return;
+
+  const key = fact.text.slice(0, 40);
+  seen.add(key);
+
+  const total = filtered.length;
+  const pct = ((idx + 1) / total) * 100;
+
+  if (animate) {
+    cardEl.classList.add('fade-out');
+    setTimeout(() => {
+      factEl.textContent = fact.text;
+      catEl.textContent = fact.cat;
+      counterEl.textContent = `${idx + 1} of ${total}`;
+      fillEl.style.width = pct + '%';
+      seenEl.textContent = seen.size + ' discovered';
+      cardEl.classList.remove('fade-out');
+    }, 220);
+  } else {
+    factEl.textContent = fact.text;
+    catEl.textContent = fact.cat;
+    counterEl.textContent = `${idx + 1} of ${total}`;
+    fillEl.style.width = pct + '%';
+    seenEl.textContent = seen.size + ' discovered';
+  }
+}
+
+document.getElementById('btn-random').addEventListener('click', () => {
+  currentIndex = Math.floor(Math.random() * filtered.length);
+  showFact(currentIndex);
+});
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  currentIndex = (currentIndex - 1 + filtered.length) % filtered.length;
+  showFact(currentIndex);
+});
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  currentIndex = (currentIndex + 1) % filtered.length;
+  showFact(currentIndex);
+});
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    currentIndex = (currentIndex + 1) % filtered.length;
+    showFact(currentIndex);
+  } else if (e.key === 'ArrowLeft') {
+    currentIndex = (currentIndex - 1 + filtered.length) % filtered.length;
+    showFact(currentIndex);
+  } else if (e.key === 'r' || e.key === 'R') {
+    currentIndex = Math.floor(Math.random() * filtered.length);
+    showFact(currentIndex);
+  }
+});
+
+renderFilters();
+showFact(currentIndex, false);
+</script>
+</body>
+</html>
